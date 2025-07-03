@@ -43,4 +43,12 @@ export async function getUser() {
   } else {
     return SecureStore.getItemAsync(USER_KEY);
   }
+}
+
+export async function removeUser() {
+  if (Platform.OS === 'web') {
+    await AsyncStorage.removeItem(USER_KEY);
+  } else {
+    await SecureStore.deleteItemAsync(USER_KEY);
+  }
 } 
