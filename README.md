@@ -37,60 +37,28 @@ A full-stack, mobile-first Payment Management Dashboard built with **React Nativ
 ## Folder Structure
 
 ```
-/client
-  App.tsx
-  index.ts
-  app.json
-  /assets
-    adaptive-icon.png
-    addPayment.png
-    favicon.png
-    icon.png
-    logo.png
-    splash-icon.png
-  /src
-    /screens
-      DashboardScreen.tsx
-      UserManagementScreen.tsx
-      LoginScreen.tsx
-      TransactionListScreen.tsx
-      AddPaymentScreen.tsx
-      TransactionDetailsScreen.tsx
-    /services
-      api.ts
-    /utils
-      auth.ts
+client/           # React Native (Expo) frontend
+  assets/         # App icons and images
+  src/            # Source code
+    screens/      # App screens (UI)
+    services/     # API and service logic
+    utils/        # Utility functions (e.g., auth)
+  App.tsx         # App entry point
+  index.ts        # Expo entry
+  app.json        # Expo config
 
-/server
-  /src
-    /auth
-      auth.controller.ts
-      auth.module.ts
-      auth.service.ts
-      jwt.strategy.ts
-      ...
-    /payments
-      payments.controller.ts
-      payments.module.ts
-      payments.service.ts
-      payments.gateway.ts
-      ...
-    /users
-      users.controller.ts
-      users.module.ts
-      users.service.ts
-      ...
-    app.module.ts
-    main.ts
-  /prisma
-    schema.prisma
-    seed.ts
-    /migrations
-      /20250703043644_init
-        migration.sql
-      migration_lock.toml
-  docker-compose.yml
-  ...
+server/           # NestJS backend
+  src/            # Backend source code
+    auth/         # Auth logic (JWT, guards)
+    payments/     # Payments module (CRUD, stats, gateway)
+    users/        # User management
+    app.module.ts # Main app module
+    main.ts       # App bootstrap
+  prisma/         # Prisma ORM setup
+    schema.prisma # DB schema
+    seed.ts       # Seed script
+    migrations/   # DB migrations
+  docker-compose.yml # Docker config for DB
 ```
 
 ---
@@ -100,26 +68,6 @@ A full-stack, mobile-first Payment Management Dashboard built with **React Nativ
 ### Prerequisites
 - Node.js (v16+ recommended)
 - PostgreSQL database (or use Docker)
-- Expo CLI (`npm install -g expo-cli`)
-
-### Backend Setup
-1. **Install dependencies:**
-   ```sh
-   cd server
-   npm install
-   ```
-2. **Configure environment:**
-   - Copy `.env.example` to `.env` and set your `DATABASE_URL`.
-3. **Prisma setup:**
-   ```sh
-   npx prisma migrate dev --name init
-   npx prisma generate
-   npx prisma db seed
-   ```
-4. **Start the server:**
-   ```sh
-   npm run start:dev
-   ```
 
 ### Docker Setup (Database Only)
 
@@ -140,7 +88,25 @@ You can run the **database only** using Docker:
 - The database will be available at `localhost:5432`  
   (user: `postgres`, password: `password`, database: `db_payment`).
 
-> **Note:** You still need to run the backend server (`npm run start:dev`) separately on your host machine.
+
+### Backend Setup
+1. **Install dependencies:**
+   ```sh
+   cd server
+   npm install
+   ```
+2. **Configure environment:**
+   - Copy `.env.example` to `.env` and set your `DATABASE_URL`.
+3. **Prisma setup:**
+   ```sh
+   npx prisma migrate dev --name init
+   npx prisma generate
+   npx prisma db seed
+   ```
+4. **Start the server:**
+   ```sh
+   npm run start:dev
+   ```
 
 ### Frontend Setup
 1. **Install dependencies:**
@@ -201,27 +167,27 @@ Below are screenshots of each main screen (see the `screenshots/` folder for ful
 
 - **Login Screen**
   
-  ![Login Screen](screenshots/login-screen.jpg)
+  <img src="screenshots/login-screen.jpg" alt="Login Screen" width="150" />
 
 - **Dashboard Screen**
   
-  ![Dashboard Screen](screenshots/dashboard.jpg)
+  <img src="screenshots/dashboard.jpg" alt="Dashboard Screen" width="150" />
 
 - **Transaction List Screen**
   
-  ![Transaction List Screen](screenshots/transaction-list.jpg)
+  <img src="screenshots/transaction-list.jpg" alt="Transaction List Screen" width="150" />
 
 - **Transaction Details Screen**
   
-  ![Transaction Details Screen](screenshots/transaction-deatils.jpg)
+  <img src="screenshots/transaction-deatils.jpg" alt="Transaction Details Screen" width="150" />
 
 - **Add Payment Screen**
   
-  ![Add Payment Screen](screenshots/add-payment.jpg)
+  <img src="screenshots/add-payment.jpg" alt="Add Payment Screen" width="150" />
 
 - **User Management Screen**
   
-  ![User Management Screen](screenshots/user-management.jpg)
+  <img src="screenshots/user-management.jpg" alt="User Management Screen" width="150" />
 
 ---
 
