@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Query, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, UseGuards, Request, Res } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import { stringify } from 'csv-stringify/sync';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('payments')
@@ -29,6 +31,26 @@ export class PaymentsController {
   @Get('stats')
   async getStats() {
     return this.paymentsService.getStats();
+  }
+
+  @Get('export')
+  async exportCSV(@Res() res: Response) {
+    const payments = await this.paymentsService.findAll({ page: 1, limit: 10000 });
+    const csv = stringify(payments.data, {
+      header: true,
+      columns: [
+        'id',
+        'amount',
+        'receiver',
+        'status',
+        'method',
+        'createdAt',
+        'userId',
+      ],
+    });
+    res.header('Content-Type', 'text/csv');
+    res.attachment('payments.csv');
+    return res.send(csv);
   }
 
   @Get(':id')
