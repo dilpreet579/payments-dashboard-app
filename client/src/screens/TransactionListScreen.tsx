@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput, Platform, Linking, Button, Alert } from 'react-native';
 import api from '../services/api';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { getToken } from '../utils/auth';
 
 export default function TransactionListScreen({ navigation }: any) {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -49,9 +52,49 @@ export default function TransactionListScreen({ navigation }: any) {
     </TouchableOpacity>
   );
 
+  const handleExport = async () => {
+    console.log('Export button pressed');
+    const params = [];
+    if (status) params.push(`status=${encodeURIComponent(status)}`);
+    if (method) params.push(`method=${encodeURIComponent(method)}`);
+    if (startDate) params.push(`startDate=${startDate.toISOString().slice(0, 10)}`);
+    if (endDate) params.push(`endDate=${endDate.toISOString().slice(0, 10)}`);
+    const query = params.length ? `?${params.join('&')}` : '';
+    const url = `/payments/export${query}`;
+    try {
+      if (Platform.OS === 'web') {
+        console.log('Web export: importing file-saver');
+        const { saveAs } = await import('file-saver');
+        console.log('Web export: calling api.get', url);
+        const res = await api.get(url, { responseType: 'blob' });
+        console.log('Web export: got response, calling saveAs');
+        saveAs(res.data, 'transactions.csv');
+        console.log('Web export: saveAs called');
+      } else {
+        console.log('Mobile export: preparing download');
+        const downloadUrl = `http://192.168.1.8:3000${url}`;
+        const fileUri = FileSystem.documentDirectory + 'transactions.csv';
+        const token = await getToken();
+        console.log('Mobile export: downloading file', downloadUrl);
+        const downloadRes = await FileSystem.downloadAsync(downloadUrl, fileUri, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log('Mobile export: file downloaded, sharing', downloadRes.uri);
+        await Sharing.shareAsync(downloadRes.uri);
+        Alert.alert('Exported', 'CSV exported and ready to share.');
+      }
+    } catch (err) {
+      console.log('Export error:', err);
+      Alert.alert('Export failed', 'Could not export transactions.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Transactions</Text>
+      <View style={styles.exportBtnContainer}>
+        <Button title="Export CSV" onPress={handleExport} />
+      </View>
       <View style={styles.filters}>
         <View style={styles.filterRow}>
           <Text style={styles.filterLabel}>Status:</Text>
@@ -121,12 +164,19 @@ export default function TransactionListScreen({ navigation }: any) {
         <Text style={styles.error}>{error}</Text>
       ) : (
         <>
-          <FlatList
-            data={transactions}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
-            contentContainerStyle={{ paddingBottom: 24 }}
-          />
+          {transactions.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyIcon}>📭</Text>
+              <Text style={styles.emptyText}>No transactions found for the current filters.</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={transactions}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderItem}
+              contentContainerStyle={{ paddingBottom: 24 }}
+            />
+          )}
           <View style={styles.pagination}>
             <Text
               style={[styles.pageBtn, page === 1 && styles.disabled]}
@@ -168,4 +218,8 @@ const styles = StyleSheet.create({
   pageBtn: { marginHorizontal: 16, fontSize: 16, color: '#007AFF' },
   pageNum: { fontSize: 16 },
   disabled: { color: '#ccc' },
+  emptyState: { alignItems: 'center', marginTop: 48, marginBottom: 24 },
+  emptyIcon: { fontSize: 48, marginBottom: 8 },
+  emptyText: { fontSize: 16, color: '#888', textAlign: 'center' },
+  exportBtnContainer: { alignItems: 'flex-end', marginBottom: 8 },
 }); 
