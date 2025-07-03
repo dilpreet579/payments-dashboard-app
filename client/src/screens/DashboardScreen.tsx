@@ -78,6 +78,8 @@ export default function DashboardScreen({ navigation }: any) {
           )}
           <View style={styles.buttonContainer}>
             <Button title="View Transactions" onPress={() => navigation.navigate('Transactions')} />
+            <View style={{ height: 12 }} />
+            <Button title="Add Payment" onPress={() => navigation.navigate('AddPayment')} />
           </View>
         </>
       ) : null}
