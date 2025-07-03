@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { getToken } from '../utils/auth';
+import io from 'socket.io-client';
 
 export default function TransactionListScreen({ navigation }: any) {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -40,6 +41,18 @@ export default function TransactionListScreen({ navigation }: any) {
       }
     };
     fetchTransactions();
+
+    // Socket.io for real-time updates
+    const socket = io('http://192.168.1.8:3000');
+    socket.on('paymentCreated', () => {
+      // Only refresh if on first page and no filters for simplicity
+      if (page === 1 && !status && !method && !startDate && !endDate) {
+        fetchTransactions();
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, [page, status, method, startDate, endDate]);
 
   const renderItem = ({ item }: any) => (

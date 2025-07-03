@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Button } from 'react-native';
 import api from '../services/api';
 import { LineChart } from 'react-native-chart-kit';
+import io from 'socket.io-client';
 
 export default function DashboardScreen({ navigation }: any) {
   const [stats, setStats] = useState<any>(null);
@@ -23,6 +24,16 @@ export default function DashboardScreen({ navigation }: any) {
       }
     };
     fetchStats();
+
+    // Socket.io for real-time updates
+    const socket = io('http://192.168.1.8:3000');
+    socket.on('paymentCreated', () => {
+      fetchStats();
+      console.log('Payment created');
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const chartData = stats?.last7Days
