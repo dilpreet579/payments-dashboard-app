@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { PaymentsGateway } from './payments.gateway';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly paymentsGateway: PaymentsGateway,
+  ) {}
 
   async findAll(query: {
     page: number;
@@ -47,7 +51,7 @@ export class PaymentsService {
 
   async create(body: any, userId: number) {
     const { amount, receiver, status, method } = body;
-    return this.prisma.payment.create({
+    const payment = await this.prisma.payment.create({
       data: {
         amount: Number(amount),
         receiver,
@@ -56,6 +60,8 @@ export class PaymentsService {
         userId,
       },
     });
+    this.paymentsGateway.emitPaymentCreated(payment);
+    return payment;
   }
 
   async getStats() {
