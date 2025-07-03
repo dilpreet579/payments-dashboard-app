@@ -96,13 +96,13 @@ export default function DashboardScreen({ navigation }: any) {
               <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Transactions')}>
                 <Text style={styles.buttonText}>View Transactions</Text>
               </TouchableOpacity>
-              <View style={{ height: 7 }} />
-              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddPayment')}>
-                <Text style={styles.buttonText}>Add Payment</Text>
-              </TouchableOpacity>
               {isAdmin && (
                 <>
-                  <View style={{ height: 12 }} />
+                  <View style={{ height: 7 }} />
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddPayment')}>
+                    <Text style={styles.buttonText}>Add Payment</Text>
+                  </TouchableOpacity>
+                  <View style={{ height: 7 }} />
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserManagement')}>
                     <Text style={styles.buttonText}>User Management</Text>
                   </TouchableOpacity>
