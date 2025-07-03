@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Platform, TouchableOpacity, Image } from 'react-native';
 import api from '../services/api';
-import { saveToken } from '../utils/auth';
+import { saveToken, saveUser } from '../utils/auth';
 
 export default function LoginScreen({ navigation }: any) {
   const [username, setUsername] = useState('');
@@ -19,6 +19,7 @@ export default function LoginScreen({ navigation }: any) {
       const res = await api.post('/auth/login', { username, password });
       console.log('Login response:', res.data);
       await saveToken(res.data.access_token);
+      await saveUser(res.data.user.role);
       navigation.replace('Dashboard');
     } catch (err: any) {
       let message = 'Login failed. Please try again.';

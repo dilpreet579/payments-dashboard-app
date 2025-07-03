@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 const TOKEN_KEY = 'jwt';
+const USER_KEY = 'user';
 
 export async function saveToken(token: string) {
   if (Platform.OS === 'web') {
@@ -25,5 +26,21 @@ export async function removeToken() {
     await AsyncStorage.removeItem(TOKEN_KEY);
   } else {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
+  }
+}
+
+export async function saveUser(user:string) {
+  if (Platform.OS === 'web') {
+    await AsyncStorage.setItem(USER_KEY, user);
+  } else {
+    await SecureStore.setItemAsync(USER_KEY, user);
+  }
+}
+
+export async function getUser() {
+  if (Platform.OS === 'web') {
+    return AsyncStorage.getItem(USER_KEY);
+  } else {
+    return SecureStore.getItemAsync(USER_KEY);
   }
 } 

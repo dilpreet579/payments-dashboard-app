@@ -6,6 +6,7 @@ import DashboardScreen from './src/screens/DashboardScreen';
 import TransactionListScreen from './src/screens/TransactionListScreen';
 import TransactionDetailsScreen from './src/screens/TransactionDetailsScreen';
 import AddPaymentScreen from './src/screens/AddPaymentScreen';
+import UserManagementScreen from './src/screens/UserManagementScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Screen name="Transactions" component={TransactionListScreen} />
         <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
         <Stack.Screen name="AddPayment" component={AddPaymentScreen} />
+        <Stack.Screen name="UserManagement" component={UserManagementScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

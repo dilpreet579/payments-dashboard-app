@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Butt
 import api from '../services/api';
 import { LineChart } from 'react-native-chart-kit';
 import io from 'socket.io-client';
+import { getUser } from '../utils/auth';
 
 export default function DashboardScreen({ navigation }: any) {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -30,6 +32,9 @@ export default function DashboardScreen({ navigation }: any) {
     socket.on('paymentCreated', () => {
       fetchStats();
       console.log('Payment created');
+    });
+    getUser().then(user => {
+      setIsAdmin(user === 'admin');
     });
     return () => {
       socket.disconnect();
@@ -95,6 +100,14 @@ export default function DashboardScreen({ navigation }: any) {
               <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddPayment')}>
                 <Text style={styles.buttonText}>Add Payment</Text>
               </TouchableOpacity>
+              {isAdmin && (
+                <>
+                  <View style={{ height: 12 }} />
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserManagement')}>
+                    <Text style={styles.buttonText}>User Management</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           </>
         ) : null}
