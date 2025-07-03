@@ -51,7 +51,7 @@ export default function UserManagementScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.bg} keyboardShouldPersistTaps="handled">
+    <View style={styles.bg}>
       <View style={styles.card}>
         <Text style={styles.title}>User Management</Text>
         <Text style={styles.sectionTitle}>Add New User</Text>
@@ -107,7 +107,7 @@ export default function UserManagementScreen() {
           />
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
