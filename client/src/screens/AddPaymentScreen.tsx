@@ -25,7 +25,7 @@ export default function AddPaymentScreen({ navigation }: any) {
         method,
       });
       Alert.alert('Success', 'Payment added!', [
-        { text: 'OK', onPress: () => navigation.navigate('Transactions') },
+        { text: 'OK', onPress: () => navigation.navigate('Dashboard') },
       ]);
     } catch (err: any) {
       Alert.alert('Error', err?.response?.data?.message || 'Failed to add payment');
