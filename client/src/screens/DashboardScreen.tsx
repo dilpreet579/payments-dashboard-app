@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Button } from 'react-native';
 import api from '../services/api';
 import { LineChart } from 'react-native-chart-kit';
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }: any) {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -76,6 +76,9 @@ export default function DashboardScreen() {
               style={styles.chart}
             />
           )}
+          <View style={styles.buttonContainer}>
+            <Button title="View Transactions" onPress={() => navigation.navigate('Transactions')} />
+          </View>
         </>
       ) : null}
     </ScrollView>
@@ -105,4 +108,5 @@ const styles = StyleSheet.create({
   chartTitle: { fontSize: 18, fontWeight: 'bold', marginTop: 24, marginBottom: 8 },
   chart: { borderRadius: 12 },
   error: { color: 'red', marginBottom: 16 },
+  buttonContainer: { marginTop: 24, width: '100%' },
 }); 
