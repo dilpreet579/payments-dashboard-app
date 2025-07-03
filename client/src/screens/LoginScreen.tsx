@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Platform } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-async function save(key: string, value: string) {
-  try {
-    if (Platform.OS === 'web') {
-      await AsyncStorage.setItem(key, value);
-    } else { // mobile
-      await SecureStore.setItemAsync(key, value);
-    }
-  } catch (error) {
-    console.error("Error saving data:", error); 
-  }
-}
+import api from '../services/api';
+import { saveToken } from '../utils/auth';
 
 export default function LoginScreen({ navigation }: any) {
   const [username, setUsername] = useState('');
@@ -28,9 +15,9 @@ export default function LoginScreen({ navigation }: any) {
     try {
       console.log('Login button pressed');
       console.log('Logging in...');
-      const res = await axios.post('http://192.168.1.8:3000/auth/login', { username, password });
+      const res = await api.post('/auth/login', { username, password });
       console.log('Login response:', res.data);
-      await save('jwt', res.data.access_token);
+      await saveToken(res.data.access_token);
       navigation.replace('Dashboard');
     } catch (err: any) {
       let message = 'Login failed. Please try again.';
